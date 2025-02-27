@@ -47,7 +47,8 @@ def main(dataset_path, field, model, batch_size):
     try:
         # Load the dataset directly from the path
         dataset = load_dataset(
-            str(dataset_path)
+            str(dataset_path),
+            streaming=True
         )
         
         # Handle different dataset structures
