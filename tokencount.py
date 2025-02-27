@@ -54,23 +54,24 @@ def main(dataset_path, field, model, batch_size):
         # Handle different dataset structures
         if isinstance(dataset, dict) and 'train' in dataset:
             dataset = dataset['train']
-            
-        click.echo(f"Dataset loaded with {len(dataset)} items")
+        
+        click.echo("Dataset loaded successfully")
         
         # Initialize counters
         total_tokens = 0
         total_processed = 0
         
-        # Process the dataset
-        for i in tqdm(range(0, len(dataset), batch_size), desc="Processing batches"):
-            batch = dataset[i:min(i + batch_size, len(dataset))]
-            
-            for item in batch:
-                if field in item and item[field]:
-                    text = item[field]
-                    tokens_count = count_tokens_in_text(text, encoding)
-                    total_tokens += tokens_count
-                    total_processed += 1
+        # Process the dataset (streaming compatible)
+        for item in tqdm(dataset, desc="Processing items"):
+            if field in item and item[field]:
+                text = item[field]
+                tokens_count = count_tokens_in_text(text, encoding)
+                total_tokens += tokens_count
+                total_processed += 1
+                
+            # Print progress every 1000 items
+            if total_processed > 0 and total_processed % 1000 == 0:
+                click.echo(f"Processed {total_processed} items, {total_tokens} tokens so far")
         
         # Print summary
         click.echo(f"\nTotal tokens: {total_tokens}")
