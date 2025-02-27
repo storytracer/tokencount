@@ -62,16 +62,16 @@ def main(dataset_path, field, model, batch_size):
         total_processed = 0
         
         # Process the dataset (streaming compatible)
-        for item in tqdm(dataset, desc="Processing items"):
+        progress_bar = tqdm(dataset, desc="Tokenizing", unit="tokens")
+        for item in dataset:
             if field in item and item[field]:
                 text = item[field]
                 tokens_count = count_tokens_in_text(text, encoding)
                 total_tokens += tokens_count
                 total_processed += 1
                 
-            # Print progress every 1000 items
-            if total_processed > 0 and total_processed % 1000 == 0:
-                click.echo(f"Processed {total_processed} items, {total_tokens} tokens so far")
+                # Update progress bar with token count
+                progress_bar.update(tokens_count)
         
         # Print summary
         click.echo(f"\nTotal tokens: {total_tokens}")
