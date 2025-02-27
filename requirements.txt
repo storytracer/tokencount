@@ -1,5 +1,4 @@
 click
 tiktoken
 tqdm
-duckdb
-pyarrow
+datasets
